@@ -55,3 +55,78 @@ docker compose up
 Espera um tiquinho que o Kafka deve subir.
 
 Agora é fazer a integração dos serviços usando o Quarkus Messaging Kafka! ;)
+
+## Teste via CLI no Kafka
+
+Listando os tópicos:
+```sh
+docker exec -it modulo2-backend-quarkus-extra-kafka-florinda-eats-kafka-1 \
+  /opt/kafka/bin/kafka-topics.sh \
+  --bootstrap-server localhost:9092 \
+  --list
+```
+
+Criando tópico:
+```sh
+docker exec -it modulo2-backend-quarkus-extra-kafka-florinda-eats-kafka-1 \
+  /opt/kafka/bin/kafka-topics.sh \
+  --bootstrap-server localhost:9092 \
+  --create \
+  --partitions 2 \
+  --topic pagamentosConfirmados
+```
+
+E criando com docker compose:
+```sh
+docker compose exec kafka \
+  /opt/kafka/bin/kafka-topics.sh \
+  --bootstrap-server localhost:9092 \
+  --create \
+  --partitions 2 \
+  --topic pagamentosConfirmados
+```
+
+Detalhando um tópico:
+```sh
+docker compose exec kafka \
+  /opt/kafka/bin/kafka-topics.sh \
+  --bootstrap-server localhost:9092 \
+  --describe \
+  --topic pagamentosConfirmados
+```
+
+Produzindo uma mensagem:
+```sh
+docker compose exec kafka \
+  /opt/kafka/bin/kafka-console-producer.sh \
+  --bootstrap-server localhost:9092 \
+  --topic pagamentosConfirmados \
+  --property "parse.key=true" \
+  --property "key.separator=;" 
+ 
+```
+Entre com os as mensagens:
+
+`1; {"pagamentoId": 1, "pedidoId": 1 }`
+
+`2; {"pagamentoId": 2, "pedidoId": 2 }`
+
+`3; {"pagamentoId": 3, "pedidoId": 3 }`
+
+Consumindo mensagens:
+```sh
+docker compose exec kafka \
+  /opt/kafka/bin/kafka-console-consumer.sh \
+  --bootstrap-server localhost:9092 \
+  --topic pagamentosConfirmados \
+  --from-beginning \
+  --group teste 
+```
+
+Verificando consumer groups:
+```sh
+docker compose exec kafka  \
+/opt/kafka/bin/kafka-consumer-groups.sh \
+--bootstrap-server localhost:9092 \
+--all-groups --describe
+```
