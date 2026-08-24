@@ -99,7 +99,7 @@ Produzindo uma mensagem:
 ```sh
 docker compose exec kafka \
   /opt/kafka/bin/kafka-console-producer.sh \
-  --bootstrap-server localhost:9092 \
+  --bootstrap-server localhost:9094 \
   --topic pagamentosConfirmados \
   --property "parse.key=true" \
   --property "key.separator=;" 
