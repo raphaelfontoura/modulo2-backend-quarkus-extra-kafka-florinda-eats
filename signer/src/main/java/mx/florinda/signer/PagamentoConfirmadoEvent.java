@@ -1,4 +1,4 @@
-package mx.florinda.notafiscal;
+package mx.florinda.signer;
 
 import java.math.BigDecimal;
 
