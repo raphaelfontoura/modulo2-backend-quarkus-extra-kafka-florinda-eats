@@ -7,8 +7,9 @@ Florinda Eats é uma aplicação de entrega de comida para o restaurante da Dona
 - **Pedidos**, que tem informações do cardápio e dos pedidos realizados. Roda por default na porta `8080`
 - **Pagamentos**, que permite a confirmação de um pagamento. Roda por default na porta `8081`
 - **Nota Fiscal**, que gera XMLs de notas fiscais na saída padrão. Roda por default na porta `8082`
+- **Signer**, que deve gerar um hash MD5 dos dados de um pagamento. Roda por default na porta `8083`
 
-# O que você precisa fazer?
+# Como executar a aplicação?
 
 ## Executar o serviço de Pagamento
 
@@ -42,6 +43,15 @@ Abra o Postman e importe a coleção `florinda-eats-notas-fiscais.postman_collec
 
 Obtenha uma nota fiscal para um pedido (p. ex., o de id 1) com a URL `http://localhost:8082/nota-fiscal/pedido/1`
 
+## Executar o serviço Signer
+
+Abra a código do serviço `signer` no IntelliJ.
+
+Execute o serviço através do IntelliJ, utilizando _Maven_ > _Plugins_ > _Quarkus_ > `quarkus:dev`.
+
+Já há um código para a classe `Hash`, que gerar um hash MD5 a partir de uma `String`.
+Há também um código para a classe `PagamentoConfirmadoEvent`, que representado o evento de pagamento confirmado.
+
 ## Executar o Kafka
 
 O arquivo `docker-compose.yml` contém uma configuração de Kafka cuja porta para conexões externas ao container é `9094`.
@@ -52,9 +62,16 @@ Para executar o Kafka, abra um Terminal e rode na raiz do projeto:
 docker compose up
 ```
 
-Espera um tiquinho que o Kafka deve subir.
+Espera um tiquinho que o Kafka deve subir. Os serviços já estão quase todos integrados. Só falta o Signer!
 
-Agora é fazer a integração dos serviços usando o Quarkus Messaging Kafka! ;)
+# O que você deve fazer?
+
+Consuma o tópico `pagamentosConfirmados` e gere use a classe `Hash` para gerar o MD5 do `toString` de `PagamentoConfirmadoEvent`. Imprima o resultado no `System.out`.
+
+Você não deve modificar o código da classe `Hash` nem da classe `PagamentoConfirmadoEvent`.
+
+Responsa a pergunta: qual é o hash MD5 do `PagamentoConfirmadoEvent` de Godinez? Envie a resposta no canal `#02-backend-spring-quarkus`!
+
 
 ## Teste via CLI no Kafka
 
